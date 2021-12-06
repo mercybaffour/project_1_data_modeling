@@ -38,6 +38,8 @@ To complete the project, I will need to define fact and dimension tables for a s
 
 ### Files and what they do:
 
+      In "home" folder:
+      
       create_table.py
         Creates our fact and dimension tables.
       etl.py
