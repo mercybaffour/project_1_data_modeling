@@ -18,6 +18,10 @@ To complete the project, I will need to define fact and dimension tables for a s
     *Schema for Song Play Analysis*
     Using the song and log datasets, I'll create a star schema optimized for queries on song play analysis. This includes the fact and dimension tables.
 
+    ER Diagram
+
+##    <img src="images/Song_ERD.png" alt="ER diagram" style="height: 300px; width:800px;"/>
+
 ### **What is the fact table?:**
 
     Fact Table
@@ -39,7 +43,7 @@ To complete the project, I will need to define fact and dimension tables for a s
 ### Files and what they do:
 
       In "home" folder:
-      
+
       create_table.py
         Creates our fact and dimension tables.
       etl.py
@@ -50,3 +54,5 @@ To complete the project, I will need to define fact and dimension tables for a s
         Confirms that records were successfully inserted into each table.
       README.md
         Provides project overview and instructions.
+
+

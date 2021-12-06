@@ -5,6 +5,15 @@ import pandas as pd
 from sql_queries import *
 
 
+"""
+    This procedure obtains all the files from a directory and stores its filepaths in a list
+
+    INPUTS: 
+    * filepath directory
+
+"""
+
+
 def get_files(filepath):
     all_files = []
     for root, dirs, files in os.walk(filepath):
@@ -13,6 +22,18 @@ def get_files(filepath):
             all_files.append(os.path.abspath(f))
 
     return all_files
+
+
+"""
+    This procedure processes a song file whose filepath has been provided as an argument.
+    It extracts the song information in order to store it into the songs table.
+    Then it extracts the artist information in order to store it into the artists table.
+
+    INPUTS: 
+    * cur the cursor variable
+    * filepath the file path to the song file
+
+"""
 
 
 def process_song_file(cur, filepath):
@@ -36,6 +57,18 @@ def process_song_file(cur, filepath):
     artist_table_insert = (
         """INSERT INTO artists (artist_id, name, location, latitude, longitude) VALUES (%s, %s, %s, %s, %s);""")
     cur.execute(artist_table_insert, artist_data)
+
+
+"""
+    This procedure processes a log file whose filepath has been provided as an argument.
+    It extracts the log time and user to store it into the time and songs table. 
+    Then it extracts songplay actions to insert into songplays table. Song_id and artist_id were queried to find matches to insert into the table.
+
+    INPUTS: 
+    * cur the cursor variable
+    * filepath the file path to the song file
+
+"""
 
 
 def process_log_file(cur, filepath):
@@ -85,9 +118,6 @@ def process_log_file(cur, filepath):
     for index, row in df.iterrows():
 
         # get songid and artistid from song and artist tables
-        song_select = (""" SELECT songs.song_id, artists.artist_id FROM songs JOIN artists ON songs.artist_id = artists.artist_id WHERE songs.title = %s AND artists.name = %s  AND songs.duration = %s
-        """)
-
         cur.execute(song_select, (row.song, row.artist, row.length))
 
         results = cur.fetchone()
@@ -101,6 +131,11 @@ def process_log_file(cur, filepath):
         songplay_data = (row.ts, row.userId, row.level, songid,
                          artistid, row.sessionId, row.location, row.userAgent)
         cur.execute(songplay_table_insert, songplay_data)
+
+
+"""
+    This procedure processes the raw data to be used in our ETL pipeline.
+"""
 
 
 def process_data(cur, conn, filepath, func):
@@ -120,6 +155,13 @@ def process_data(cur, conn, filepath, func):
         func(cur, datafile)
         conn.commit()
         print('{}/{} files processed.'.format(i, num_files))
+
+
+"""
+    This procedure connects to a local instance of a database. This connection is used
+    to get a cursor that will be used to execute queries.
+
+"""
 
 
 def main():
