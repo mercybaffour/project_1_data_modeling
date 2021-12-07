@@ -18,7 +18,6 @@ songplay_table_create = ("""CREATE TABLE IF NOT EXISTS songplays (
   sessionId int, 
   location varchar, 
   userAgent varchar)
-  )
   """)
 
 user_table_create = ("""CREATE TABLE users (
@@ -27,7 +26,6 @@ user_table_create = ("""CREATE TABLE users (
   lastName varchar, 
   gender varchar, 
   level varchar)
-  )
   """)
 
 song_table_create = ("""CREATE TABLE songs (
@@ -36,7 +34,6 @@ song_table_create = ("""CREATE TABLE songs (
   artist_id varchar, 
   year int, 
   duration int)
-  )
   """)
 
 artist_table_create = ("""CREATE TABLE artists (
@@ -45,7 +42,6 @@ artist_table_create = ("""CREATE TABLE artists (
   location varchar, 
   latitude decimal, 
   longitude decimal)
-  )
   """)
 
 time_table_create = ("""CREATE TABLE time (start_time timestamp PRIMARY KEY NOT NULL, 
@@ -55,7 +51,6 @@ week int,
 month int, 
 year int, 
 weekday int)
-)
 """)
 
 # INSERT RECORDS
