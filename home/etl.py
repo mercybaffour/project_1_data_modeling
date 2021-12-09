@@ -44,14 +44,14 @@ def process_song_file(cur, filepath):
     song_data = df[["song_id", "title", "artist_id",
                     "year", "duration"]].values[0].tolist()
     song_table_insert = (
-        """INSERT INTO songs (song_id, title, "artist_id", year, duration) VALUES (%s, %s, %s, %s, %s);""")
+        """INSERT INTO songs (title, "artist_id", year, duration) VALUES (%s, %s, %s, %s);""")
     cur.execute(song_table_insert, song_data)
 
     # insert artist record
     artist_data = df[["artist_id", "artist_name", "artist_location",
                       "artist_latitude", "artist_longitude"]].values[0].tolist()
     artist_table_insert = (
-        """INSERT INTO artists (artist_id, name, location, latitude, longitude) VALUES (%s, %s, %s, %s, %s);""")
+        """INSERT INTO artists (name, location, latitude, longitude) VALUES (%s, %s, %s, %s);""")
     cur.execute(artist_table_insert, artist_data)
 
 
@@ -96,7 +96,7 @@ def process_log_file(cur, filepath):
     time_df = pd.DataFrame.from_dict(dict)
 
     time_table_insert = (
-        """INSERT INTO time (start_time, hour, day, week, month, year, weekday) VALUES (%s, %s, %s, %s, %s, %s, %s);""")
+        """INSERT INTO time (hour, day, week, month, year, weekday) VALUES (%s, %s, %s, %s, %s, %s);""")
     for i, row in time_df.iterrows():
         cur.execute(time_table_insert, list(row))
 
@@ -105,7 +105,7 @@ def process_log_file(cur, filepath):
 
     # insert user records
     user_table_insert = (
-        """INSERT INTO users (userId, firstName, lastName, gender, level) VALUES (%s, %s, %s, %s, %s);""")
+        """INSERT INTO users (firstName, lastName, gender, level) VALUES (%s, %s, %s, %s);""")
     for i, row in user_df.iterrows():
         cur.execute(user_table_insert, row)
 
