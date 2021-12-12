@@ -30,10 +30,10 @@ user_table_create = ("""CREATE TABLE users (
 
 song_table_create = ("""CREATE TABLE songs (
   song_id varchar PRIMARY KEY NOT NULL, 
-  title varchar, 
   artist_id varchar, 
-  year int, 
-  duration int)
+  title varchar, 
+  duration decimal,
+  year int,)
   """)
 
 artist_table_create = ("""CREATE TABLE artists (
