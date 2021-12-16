@@ -32,15 +32,11 @@ def process_song_file(cur, filepath):
     # insert song record
     song_data = df[["song_id", "artist_id", "title", 
                     "duration", "year"]].values[0].tolist()
-    song_table_insert = (
-        """INSERT INTO songs (artist_id, title, duration, year) VALUES (%s, %s, %s, %s);""")
     cur.execute(song_table_insert, song_data)
 
     # insert artist record
     artist_data = df[["artist_id", "artist_name", "artist_location",
                       "artist_latitude", "artist_longitude"]].values[0].tolist()
-    artist_table_insert = (
-        """INSERT INTO artists (name, location, latitude, longitude) VALUES (%s, %s, %s, %s);""")
     cur.execute(artist_table_insert, artist_data)
 
 
@@ -78,8 +74,7 @@ def process_log_file(cur, filepath):
             for i in range(len(column_labels))}
     time_df = pd.DataFrame.from_dict(dict)
 
-    time_table_insert = (
-        """INSERT INTO time (hour, day, week, month, year, weekday) VALUES (%s, %s, %s, %s, %s, %s);""")
+
     for i, row in time_df.iterrows():
         cur.execute(time_table_insert, list(row))
 
@@ -87,8 +82,6 @@ def process_log_file(cur, filepath):
     user_df = df[["userId", "firstName", "lastName", "gender", "level"]]
 
     # insert user records
-    user_table_insert = (
-        """INSERT INTO users (firstName, lastName, gender, level) VALUES (%s, %s, %s, %s);""")
     for i, row in user_df.iterrows():
         cur.execute(user_table_insert, row)
 
@@ -106,16 +99,19 @@ def process_log_file(cur, filepath):
             songid, artistid = None, None
 
         # insert songplay record
-        songplay_data = (row.ts, row.userId, row.level, songid,
+        songplay_data = (pd.to_datetime(row.ts, unit='ms'), row.userId, row.level, songid,
                          artistid, row.sessionId, row.location, row.userAgent)
-        cur.execute(songplay_table_insert, songplay_data)
-
+        
+        if None in songplay_data:
+            continue
+        else:
+            print(songplay_data)
+            cur.execute(songplay_table_insert, songplay_data)
 
 def process_data(cur, conn, filepath, func):
     
     #This procedure processes the raw data to be used in our ETL pipeline.
     
-
     # get all files matching extension from directory
     all_files = []
     for root, dirs, files in os.walk(filepath):

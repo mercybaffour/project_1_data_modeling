@@ -13,15 +13,15 @@ songplay_table_create = ("""CREATE TABLE IF NOT EXISTS songplays (
   start_time timestamp NOT NULL, 
   userId integer NOT NULL, 
   level varchar, 
-  songid varchar NOT NULL, 
-  artistid varchar NOT NULL, 
+  songid varchar, 
+  artistid varchar, 
   sessionId int, 
   location varchar, 
   userAgent varchar)
   """)
 
 user_table_create = ("""CREATE TABLE users (
-  userId varchar PRIMARY KEY NOT NULL, 
+  userId integer PRIMARY KEY NOT NULL, 
   firstName varchar, 
   lastName varchar, 
   gender varchar, 
@@ -44,7 +44,8 @@ artist_table_create = ("""CREATE TABLE artists (
   longitude decimal)
   """)
 
-time_table_create = ("""CREATE TABLE time (start_time timestamp PRIMARY KEY NOT NULL, 
+time_table_create = ("""CREATE TABLE time (
+start_time timestamp PRIMARY KEY NOT NULL, 
 hour int, 
 day int, 
 week int, 
@@ -60,11 +61,11 @@ songplay_table_insert = (
       start_time,
       userId,  
       level,
-      song_id, 
-      artist_id, 
-      session_id,
+      songid, 
+      artistid, 
+      sessionId,
       location,
-      user_agent
+      userAgent
       ) 
       VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
       ON CONFLICT
@@ -74,9 +75,7 @@ songplay_table_insert = (
 user_table_insert = (
     """INSERT INTO users (userId, firstName, lastName, gender, level) 
       VALUES (%s, %s, %s, %s, %s)
-      ON CONFLICT
-      DO UPDATE
-      SET level = EXCLUDED.level
+      ON CONFLICT (userId) DO UPDATE SET level = EXCLUDED.level
       """)
 
 song_table_insert = (
@@ -127,9 +126,12 @@ songs.song_id,
 artists.artist_id 
 FROM songs 
 JOIN artists 
-ON songs.artist_id=artists.artist_id 
-WHERE songs.title= % s AND artists.name = % s  AND songs.duration = % s
+ON songs.artist_id = artists.artist_id 
+WHERE songs.title = %s AND artists.name = %s AND songs.duration = %s
 """)
+
+songplays_select = (""" SELECT * from songplays""")
+
 
 
 # QUERY LISTS
