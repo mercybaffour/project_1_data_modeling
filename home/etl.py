@@ -6,13 +6,8 @@ from sql_queries import *
 
 
 def get_files(filepath):
-    """
-      This procedure obtains all the files from a directory.
+    # This procedure obtains all the files from a directory.
 
-      INPUTS:
-      * filepath directory
-
-    """
     all_files = []
     for root, dirs, files in os.walk(filepath):
         files = glob.glob(os.path.join(root, '*.json'))
@@ -23,51 +18,35 @@ def get_files(filepath):
 
 
 def process_song_file(cur, filepath):
-    """
-    This procedure processes a song file whose filepath has been provided as an argument.
-    It extracts the song information in order to store it into the songs table.
-    Then it extracts the artist information in order to store it into the artists table.
+    #This procedure processes a song file whose filepath has been provided as an argument.
+    #It extracts the song information in order to store it into the songs table.
+    #Then it extracts the artist information in order to store it into the artists table.
 
-    INPUTS: 
-    cur the cursor variable
-    filepath the file path to the song file
-
-    """
     # open song file
-    song_files = get_files("data/song_data")
+    song_files = get_files('home\data\song_data')
 
     filepath = song_files[0]
 
     df = pd.read_json(filepath, lines=True)
 
     # insert song record
-    song_data = df[["song_id", "title", "artist_id",
-                    "year", "duration"]].values[0].tolist()
-    song_table_insert = (
-        """INSERT INTO songs (title, "artist_id", year, duration) VALUES (%s, %s, %s, %s);""")
+    song_data = df[["song_id", "artist_id", "title", 
+                    "duration", "year"]].values[0].tolist()
     cur.execute(song_table_insert, song_data)
 
     # insert artist record
     artist_data = df[["artist_id", "artist_name", "artist_location",
                       "artist_latitude", "artist_longitude"]].values[0].tolist()
-    artist_table_insert = (
-        """INSERT INTO artists (name, location, latitude, longitude) VALUES (%s, %s, %s, %s);""")
     cur.execute(artist_table_insert, artist_data)
 
 
 def process_log_file(cur, filepath):
-    """
-      This procedure processes a log file whose filepath has been provided as an argument.
-      It extracts the log time and user to store it into the time and songs table. 
-      Then it extracts songplay actions to insert into songplays table. 
+    #This procedure processes a log file whose filepath has been provided as an argument.
+    # It extracts the log time and user to store it into the time and songs table. 
+    #Then it extracts songplay actions to insert into songplays table. 
 
-      INPUTS: 
-      * cur the cursor variable
-      * filepath the file path to the song file
-
-    """
     # open log file
-    log_files = get_files("data/log_data")
+    log_files = get_files('home\data\log_data')
     filepath = log_files[0]
     df = pd.read_json(filepath, lines=True)
 
@@ -95,8 +74,7 @@ def process_log_file(cur, filepath):
             for i in range(len(column_labels))}
     time_df = pd.DataFrame.from_dict(dict)
 
-    time_table_insert = (
-        """INSERT INTO time (hour, day, week, month, year, weekday) VALUES (%s, %s, %s, %s, %s, %s);""")
+
     for i, row in time_df.iterrows():
         cur.execute(time_table_insert, list(row))
 
@@ -104,8 +82,6 @@ def process_log_file(cur, filepath):
     user_df = df[["userId", "firstName", "lastName", "gender", "level"]]
 
     # insert user records
-    user_table_insert = (
-        """INSERT INTO users (firstName, lastName, gender, level) VALUES (%s, %s, %s, %s);""")
     for i, row in user_df.iterrows():
         cur.execute(user_table_insert, row)
 
@@ -123,16 +99,19 @@ def process_log_file(cur, filepath):
             songid, artistid = None, None
 
         # insert songplay record
-        songplay_data = (row.ts, row.userId, row.level, songid,
+        songplay_data = (pd.to_datetime(row.ts, unit='ms'), row.userId, row.level, songid,
                          artistid, row.sessionId, row.location, row.userAgent)
-        cur.execute(songplay_table_insert, songplay_data)
-
+        
+        if None in songplay_data:
+            continue
+        else:
+            print(songplay_data)
+            cur.execute(songplay_table_insert, songplay_data)
 
 def process_data(cur, conn, filepath, func):
-    """
-      This procedure processes the raw data to be used in our ETL pipeline.
-    """
-
+    
+    #This procedure processes the raw data to be used in our ETL pipeline.
+    
     # get all files matching extension from directory
     all_files = []
     for root, dirs, files in os.walk(filepath):
@@ -152,16 +131,14 @@ def process_data(cur, conn, filepath, func):
 
 
 def main():
-    """
-    This procedure connects to a local instance of a database. 
+    #This procedure connects to a local instance of a database. 
 
-    """
     conn = psycopg2.connect(
         "host=127.0.0.1 dbname=sparkifydb user=postgres password=password")
     cur = conn.cursor()
 
-    process_data(cur, conn, filepath='data/song_data', func=process_song_file)
-    process_data(cur, conn, filepath='data/log_data', func=process_log_file)
+    process_data(cur, conn, filepath='home\data\song_data', func=process_song_file)
+    process_data(cur, conn, filepath='home\data\log_data', func=process_log_file)
 
     conn.close()
 
