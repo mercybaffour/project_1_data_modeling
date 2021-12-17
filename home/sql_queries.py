@@ -31,16 +31,9 @@ user_table_create = """CREATE TABLE users (
 song_table_create = """CREATE TABLE songs (
   song_id varchar PRIMARY KEY NOT NULL, 
   artist_id varchar, 
-<<<<<<< HEAD
   year int, 
   duration int)
   """
-=======
-  title varchar, 
-  duration decimal,
-  year int,)
-  """)
->>>>>>> a5372378f477ad1950dbf60ae3d3c96fb3bd8b63
 
 artist_table_create = """CREATE TABLE artists (
   artist_id varchar PRIMARY KEY NOT NULL, 
@@ -50,12 +43,7 @@ artist_table_create = """CREATE TABLE artists (
   longitude decimal)
   """
 
-<<<<<<< HEAD
 time_table_create = """CREATE TABLE time (start_time timestamp PRIMARY KEY NOT NULL, 
-=======
-time_table_create = ("""CREATE TABLE time (
-start_time timestamp PRIMARY KEY NOT NULL, 
->>>>>>> a5372378f477ad1950dbf60ae3d3c96fb3bd8b63
 hour int, 
 day int, 
 week int, 
@@ -141,7 +129,6 @@ WHERE songs.title = %s AND artists.name = %s AND songs.duration = %s
 """)
 
 songplays_select = (""" SELECT * from songplays""")
-
 
 
 # QUERY LISTS
