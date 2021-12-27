@@ -33,7 +33,7 @@ song_table_create = ("""CREATE TABLE songs (
   artist_id varchar, 
   title varchar, 
   duration decimal,
-  year int,)
+  year int)
   """)
 
 artist_table_create = ("""CREATE TABLE artists (
@@ -45,13 +45,13 @@ artist_table_create = ("""CREATE TABLE artists (
   """)
 
 time_table_create = ("""CREATE TABLE time (
-start_time timestamp PRIMARY KEY NOT NULL, 
-hour int, 
-day int, 
-week int, 
-month int, 
-year int, 
-weekday int)
+  start_time timestamp PRIMARY KEY NOT NULL, 
+  hour int, 
+  day int, 
+  week int, 
+  month int, 
+  year int, 
+  weekday int)
 """)
 
 # INSERT RECORDS
