@@ -6,7 +6,9 @@ from sql_queries import *
 
 
 def get_files(filepath):
-    # This procedure obtains all the files from a directory.
+    """
+    This procedure obtains all the files from a directory.
+    """
 
     all_files = []
     for root, dirs, files in os.walk(filepath):
@@ -18,14 +20,11 @@ def get_files(filepath):
 
 
 def process_song_file(cur, filepath):
-    #This procedure processes a song file whose filepath has been provided as an argument.
-    #It extracts the song information in order to store it into the songs table.
-    #Then it extracts the artist information in order to store it into the artists table.
-
-    # open song file
-    song_files = get_files('home\data\song_data')
-
-    filepath = song_files[0]
+    """
+    This procedure processes a song file whose filepath has been provided as an argument.
+    It extracts the song information in order to store it into the songs table.
+    Then it extracts the artist information in order to store it into the artists table.
+    """
 
     df = pd.read_json(filepath, lines=True)
 
@@ -41,13 +40,12 @@ def process_song_file(cur, filepath):
 
 
 def process_log_file(cur, filepath):
-    #This procedure processes a log file whose filepath has been provided as an argument.
-    # It extracts the log time and user to store it into the time and songs table. 
-    #Then it extracts songplay actions to insert into songplays table. 
+    """
+    This procedure processes a log file whose filepath has been provided as an argument.
+    It extracts the log time and user to store it into the time and songs table. 
+    #Then it extracts songplay actions to insert into songplays table.
+    """ 
 
-    # open log file
-    log_files = get_files('home\data\log_data')
-    filepath = log_files[0]
     df = pd.read_json(filepath, lines=True)
 
     # filter by NextSong action
@@ -102,17 +100,15 @@ def process_log_file(cur, filepath):
         songplay_data = (pd.to_datetime(row.ts, unit='ms'), row.userId, row.level, songid,
                          artistid, row.sessionId, row.location, row.userAgent)
         
-        if None in songplay_data:
-            continue
-        else:
-            print(songplay_data)
-            cur.execute(songplay_table_insert, songplay_data)
+        print(songplay_data)
+        cur.execute(songplay_table_insert, songplay_data)
 
 def process_data(cur, conn, filepath, func):
-    
-    #This procedure processes the raw data to be used in our ETL pipeline.
-    
-    # get all files matching extension from directory
+    """
+    This procedure processes the raw data to be used in our ETL pipeline.
+    """
+
+    #get all files matching extension from directory
     all_files = []
     for root, dirs, files in os.walk(filepath):
         files = glob.glob(os.path.join(root, '*.json'))
@@ -131,7 +127,9 @@ def process_data(cur, conn, filepath, func):
 
 
 def main():
-    #This procedure connects to a local instance of a database. 
+    """
+    This procedure connects to a local instance of a database. 
+    """
 
     conn = psycopg2.connect(
         "host=127.0.0.1 dbname=sparkifydb user=postgres password=password")
